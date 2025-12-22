@@ -1,0 +1,31 @@
+WITH avg_rate AS (
+    SELECT
+        AVG(CAST(rate AS FLOAT)) AS avg_rate
+    FROM dbo.f_d_rom
+    WHERE flag = ''
+)
+SELECT
+    rate.ty_rate, 
+    f_d_rom.folio, 
+    f_d_rom.noroom, 
+    f_d_rom.rate, 
+    folio.lastname,
+    ar.avg_rate,
+    CASE
+        WHEN f_d_rom.rate < ar.avg_rate * 0.5 THEN 'TERLALU KECIL'
+        WHEN f_d_rom.rate > ar.avg_rate * 2   THEN 'TERLALU BESAR'
+    END AS STATUS_RATE
+FROM dbo.f_d_rom
+JOIN dbo.rate
+    ON rate.ty_rate = f_d_rom.rt_type
+JOIN dbo.folio
+    ON f_d_rom.folio = folio.folio
+CROSS JOIN avg_rate ar
+WHERE
+    rate.persen <> N'100.00'
+    AND f_d_rom.flag = ''
+    AND (
+        f_d_rom.rate < ar.avg_rate * 0.5
+        OR f_d_rom.rate > ar.avg_rate * 2
+    )
+ORDER BY f_d_rom.rate;

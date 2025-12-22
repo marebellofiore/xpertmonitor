@@ -1,0 +1,21 @@
+SELECT
+	set_sys.nama_var, 
+	set_sys.nilai_chr,
+  f_dtl.tgl_tran, 
+	f_dtl.ket_code, 
+	f_dtl.jumlah, 
+	folio.arriv, 
+	folio.depar, 
+	folio.lastname
+FROM
+	dbo.set_sys
+	INNER JOIN
+	dbo.f_dtl
+	ON 
+		set_sys.nilai_chr = f_dtl.chg_code
+	INNER JOIN
+	dbo.folio
+	ON 
+		f_dtl.folio = folio.folio
+WHERE
+	nama_var = N'PUB_RMDAYUSE' AND f_dtl.flag_dele = '' AND folio.flag = N'I' AND folio.arriv <> folio.depar

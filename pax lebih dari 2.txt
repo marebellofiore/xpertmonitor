@@ -1,0 +1,17 @@
+SELECT
+	f_d_rom.folio, 
+	f_d_rom.noroom, 
+	f_d_rom.orang, 
+	f_d_rom.anak, 
+	folio.lastname, 
+	folio.arriv, 
+	folio.depar
+FROM
+	dbo.f_d_rom
+	INNER JOIN
+	dbo.folio
+	ON 
+		f_d_rom.folio = folio.folio
+WHERE
+	f_d_rom.flag = '' AND
+	f_d_rom.orang > N'2'
