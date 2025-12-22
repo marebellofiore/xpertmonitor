@@ -1,0 +1,4 @@
+SELECT
+	namapt
+FROM
+	dbo.fo_param
