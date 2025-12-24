@@ -1,0 +1,27 @@
+WITH calc AS (
+    SELECT
+        d.folio,
+        SUM(
+            CASE 
+                WHEN d.dc = 'D' THEN d.jumlah
+                WHEN d.dc = 'C' THEN -d.jumlah
+                ELSE 0
+            END
+        ) AS calc_balance
+    FROM dbo.f_dtl2 d
+    WHERE d.flag_dele = ''
+    GROUP BY d.folio
+)
+SELECT
+    f.folio,
+    f.balance2 AS folio_balance,
+    c.calc_balance,
+    c.calc_balance - f.balance2 AS selisih
+FROM calc c
+JOIN dbo.folio f
+    ON c.folio = f.folio
+WHERE
+    f.flag = 'I'
+    AND c.calc_balance <> f.balance2
+ORDER BY
+    ABS(c.calc_balance - f.balance2) DESC;
